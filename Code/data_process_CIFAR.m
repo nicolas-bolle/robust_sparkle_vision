@@ -52,6 +52,13 @@ RGB(:,:,3) = B(:,:,i);
 figure
 imshow(RGB, 'InitialMagnification', 1000)
 
+% Save just 1/4 of it
+rng(0);
+I = randperm(60000,15000);
+R = R(:,:,I);
+G = G(:,:,I);
+B = B(:,:,I);
+
 % Save this
 save('..\Data\CIFAR','R','G','B','labels')
 

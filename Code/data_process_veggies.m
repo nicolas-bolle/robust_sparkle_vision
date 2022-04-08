@@ -68,6 +68,13 @@ R = R / 256;
 G = G / 256;
 B = B / 256;
 
+% Save just part of it
+rng(0);
+I = randperm(size(R,3),4000);
+R = R(:,:,I);
+G = G(:,:,I);
+B = B(:,:,I);
+
 %% Downscale by a factor of 4
 Rp = R;
 Gp = G;
