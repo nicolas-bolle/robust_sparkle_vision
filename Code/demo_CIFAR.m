@@ -1,5 +1,5 @@
-%% main
-% Loads a data set and runs SparkleVision and Sinkhorn
+%% demo_CIFAR
+% Runs SparkleVision and the robust version on MNIST data
 
 
 %% Load data
@@ -7,21 +7,14 @@
 disp(' ')
 disp('Loading data...')
 data_load_MNIST
-%data_load_CIFAR
-%data_load_veggies
 disp('Data loaded')
 
 
-%% Transformation A
+%% Transformations A and B
 % Come up with a planted value for A, and use B = inv(A) to find Y
 
 % The transformation
-Aplant = sparse(zeros(D,D));
-pi = randperm(D);
-%pi = flip(1:D);
-for i = 1 : D
-    Aplant(i,pi(i)) = 1;
-end
+Aplant = A_permutation(D);
 
 % And linearly transform things
 % This is Y = inv(A) * X
@@ -32,7 +25,7 @@ Ytest = Aplant \ Xtest;
 %% Add shifts to X
 
 % Standard deviation of pixel shifts
-eps = 1;
+eps = 2;
 
 % Using a helper function shift()
 for n = 1 : N
@@ -47,7 +40,7 @@ clear n v x
 %% Add noise for Sinkhorn
 
 % Amount of noise to add: noise = 1 means the image will be 50% noise
-noise = 0.05;
+noise = 0.1;
 
 Xnoise = X + noise / D;
 Xnoise = Xnoise ./ sum(Xnoise,1);
@@ -62,7 +55,7 @@ Asparkle = SparkleVision(X, Y);
 disp('Done with SparkleVision')
 
 
-%% Prepare to solve
+%% Prepare to solve the robust way
 
 % Cost matrix for Sinkhorn
 C = Csinkhorn(d1,d2,5);
@@ -84,7 +77,7 @@ lambda = 10;
 iter_sink = 100;
 
 % Gradient descent parameters
-iter_grad = 200;
+iter_grad = 100;
 rho = 0.01;
 eta = 0.01;
 k = 100;
@@ -123,101 +116,52 @@ end
 sgtitle('Last few iterations for A')
 clear offset
 
-% Permutation recovery
-pip = zeros(1,D);
-for i = 1 : D
-    [~,pip(i)] = max(Arobust(:,i));
-end
-figure
-scatter(1:D,pip,10,'r','.')
-hold on
-scatter(1:D,pi,20,'k','.')
-legend('Recovered','Planted')
-title('Permutation recovery')
-
-% Make the permutation a matrix
-Api = sparse(zeros(D,D));
-for i = 1 : D
-    Api(pip(i),i) = 1;
-end
-
-% Thresholded A
-p = 0.01;
-Athresh = Arobust;
-j = round((1-p)*D);
-for i = 1 : D
-    v = Athresh(:,i);
-    s = sort(v);
-    t = s(j);
-    Athresh(:,i) = v .* (v > t);
-end
-Athresh = Athresh ./ sum(Athresh,1);
-clear i j v s t
+% Thresholdings
+Arobust_t  = threshold(Arobust,5);
+Asparkle_t = threshold(Asparkle,5);
 
 
 %% Now some image plots
 
-% Figure out if we should be plotting RGB images, i.e. not MNIST data
-rgbQ = (D > 400);
-
-% If doing RGB, this is the number of images we have to work with
-if rgbQ
-    Np = floor(Ntest / 3);
-else
-    Np = Ntest;
-end
-
 % Pick 4 images
-I = randi(Np,4,1);
+I = randi(Ntest,4,1);
 
-% Plot the results of applying Aplant, Asparkle, Arobust, Athresh, and Api to it
+% Plot the results of applying Aplant, Asparkle, Asparkle_t, Arobust, Arobust_t to it
 figure
 
-if rgbQ % FIXME
-    % ???
-else
-    % Aplant
-    for i = 1 : 4
-        subplot(5,4,i)
-        imagesc(reshape(Xtest(:,i),d1,d2))
-    end
-    
-    % Asparkle
-    for i = 1 : 4
-        subplot(5,4,i+4)
-        imagesc(reshape(Asparkle * Ytest(:,i),d1,d2))
-    end
-
-    % Arobust
-    for i = 1 : 4
-        subplot(5,4,i+8)
-        imagesc(reshape(Arobust * Ytest(:,i),d1,d2))
-    end
-
-    % Athresh
-    for i = 1 : 4
-        subplot(5,4,i+12)
-        imagesc(reshape(Athresh * Ytest(:,i),d1,d2))
-    end
-
-    % Api
-    for i = 1 : 4
-        subplot(5,4,i+16)
-        imagesc(reshape(Api * Ytest(:,i),d1,d2))
-    end
-    
-    % Titles
-    subplot(5,4,1)
-    title('A planted')
-    subplot(5,4,5)
-    title('A sparkle')
-    subplot(5,4,9)
-    title('A robust')
-    subplot(5,4,13)
-    title('A thresholded')
-    subplot(5,4,17)
-    title('A permutation')
+% Aplant
+for i = 1 : 4
+    subplot(4,4,i)
+    imagesc(reshape(Xtest(:,i),d1,d2))
 end
+
+% Asparkle
+for i = 1 : 4
+    subplot(4,4,i+4)
+    imagesc(reshape(Asparkle * Ytest(:,i),d1,d2))
+end
+
+% Arobust
+for i = 1 : 4
+    subplot(4,4,i+8)
+    imagesc(reshape(Arobust * Ytest(:,i),d1,d2))
+end
+
+% Athresh
+for i = 1 : 4
+    subplot(4,4,i+12)
+    imagesc(reshape(Athresh * Ytest(:,i),d1,d2))
+end
+
+% Titles
+subplot(4,4,1)
+title('A planted')
+subplot(4,4,5)
+title('A sparkle')
+subplot(4,4,9)
+title('A robust')
+subplot(4,4,13)
+title('A thresholded')
 
 
 
