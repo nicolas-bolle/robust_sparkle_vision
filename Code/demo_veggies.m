@@ -1,13 +1,13 @@
-%% demo_CIFAR
-% Runs SparkleVision and the robust version on CIFAR data
+%% demo_veggies
+% Runs SparkleVision and the robust version on veggies data
+% Haven't been able to get good results with this size data :(
 
 
 %% Load data
 % This is where you choose which dataset you want to use
 disp(' ')
 disp('Loading data...')
-data_load_CIFAR
-% data_load_CIFAR_calibration
+data_load_veggies
 disp('Data loaded')
 
 
@@ -96,18 +96,19 @@ Arobust = A;
 % Cost
 figure
 plot(c)
-title('CIFAR cost')
+title('Veggies cost')
 xlabel('Iteration')
 ylabel('Cost')
 
 % A
 plot_A
-sgtitle('CIFAR A recovery')
+sgtitle('Veggies A recovery')
 
 % Thresholdings
-Asparkle_t = threshold(Asparkle,10);
-Arobust_t  = threshold(Arobust,10);
+Asparkle_t = threshold(Asparkle,20);
+Arobust_t  = threshold(Arobust,20);
 
 % Now some image plots
 plot_test_images_RGB
-sgtitle('CIFAR image recovery')
+sgtitle('Veggies image recovery')
+

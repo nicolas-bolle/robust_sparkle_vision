@@ -42,13 +42,14 @@ RGB(:,:,2) = reshape(X(:,3*(i-1)+2),d1,d2);
 RGB(:,:,3) = reshape(X(:,3*(i-1)+3),d1,d2);
 figure
 imshow(RGB, 'InitialMagnification', 1000)
-
-% Normalize
-X = X ./ sum(X,1);
+title('Sample image')
 
 % Train/test
 Xtest = X(:,N+1:end);
 X = X(:,1:N);
+
+% Normalize train data
+X = X ./ sum(X,1);
 
 
 %% Delete variables to save memory

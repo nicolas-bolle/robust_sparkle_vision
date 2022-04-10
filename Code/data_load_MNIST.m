@@ -23,12 +23,12 @@ Xall = reshape(images_train, D, M);
 I = randperm(M,N+Ntest);
 X = Xall(:,I);
 
-% Normalize
-X = X ./ sum(X,1);
-
 % Train/test
 Xtest = X(:,N+1:end);
 X = X(:,1:N);
+
+% Normalize train data
+X = X ./ sum(X,1);
 
 
 %% Delete variables to save memory

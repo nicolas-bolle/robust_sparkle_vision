@@ -6,10 +6,13 @@ n_plots = 5;
 font_size = 10;
 
 % Pick num_plots images
-I = randperm(Ntest,n_plots);
+I = randperm(Ntest/3,n_plots);
 
 % Plot the results of applying Aplant, Asparkle, Asparkle_t, Arobust, Arobust_t to them
 figure
+
+% For holding RGB values
+RGB = zeros(d1,d2,3);
 
 % Aplant
 subplot(5,n_plots+1,1)
@@ -17,7 +20,11 @@ text(0.5,0.5,'Planted','HorizontalAlignment','center','FontSize',font_size)
 set(gca,'visible','off')
 for i = 1 : n_plots
     subplot(5,n_plots+1,i+1)
-    imagesc(reshape(Xtest(:,I(i)),d1,d2))
+    j = 3*(I(i)-1)+1;
+    RGB(:,:,1) = reshape(Xtest(:,j  ),d1,d2);
+    RGB(:,:,2) = reshape(Xtest(:,j+1),d1,d2);
+    RGB(:,:,3) = reshape(Xtest(:,j+2),d1,d2);
+    imshow(RGB,'InitialMagnification',1000)
 end
 
 % Asparkle
@@ -26,7 +33,11 @@ text(0.5,0.5,'Sparkle Vision','HorizontalAlignment','center','FontSize',font_siz
 set(gca,'visible','off')
 for i = 1 : n_plots
     subplot(5,n_plots+1,i+n_plots+2)
-    imagesc(reshape(Asparkle * Ytest(:,I(i)),d1,d2))
+    j = 3*(I(i)-1)+1;
+    RGB(:,:,1) = reshape(Asparkle * Ytest(:,j  ),d1,d2);
+    RGB(:,:,2) = reshape(Asparkle * Ytest(:,j+1),d1,d2);
+    RGB(:,:,3) = reshape(Asparkle * Ytest(:,j+2),d1,d2);
+    imshow(RGB,'InitialMagnification',1000)
 end
 
 % Asparkle_t
@@ -35,7 +46,11 @@ text(0.5,0.5,{'Sparkle Vision','thresholded'},'HorizontalAlignment','center','Fo
 set(gca,'visible','off')
 for i = 1 : n_plots
     subplot(5,n_plots+1,i+2*n_plots+3)
-    imagesc(reshape(Asparkle_t * Ytest(:,I(i)),d1,d2))
+    j = 3*(I(i)-1)+1;
+    RGB(:,:,1) = reshape(Asparkle_t * Ytest(:,j  ),d1,d2);
+    RGB(:,:,2) = reshape(Asparkle_t * Ytest(:,j+1),d1,d2);
+    RGB(:,:,3) = reshape(Asparkle_t * Ytest(:,j+2),d1,d2);
+    imshow(RGB,'InitialMagnification',1000)
 end
 
 % Arobust
@@ -44,7 +59,11 @@ text(0.5,0.5,'Robust','HorizontalAlignment','center','FontSize',font_size)
 set(gca,'visible','off')
 for i = 1 : n_plots
     subplot(5,n_plots+1,i+3*n_plots+4)
-    imagesc(reshape(Arobust * Ytest(:,I(i)),d1,d2))
+    j = 3*(I(i)-1)+1;
+    RGB(:,:,1) = reshape(Arobust * Ytest(:,j  ),d1,d2);
+    RGB(:,:,2) = reshape(Arobust * Ytest(:,j+1),d1,d2);
+    RGB(:,:,3) = reshape(Arobust * Ytest(:,j+2),d1,d2);
+    imshow(RGB,'InitialMagnification',1000)
 end
 
 % Arobust_t
@@ -53,7 +72,11 @@ text(0.5,0.5,{'Robust','thresholded'},'HorizontalAlignment','center','FontSize',
 set(gca,'visible','off')
 for i = 1 : n_plots
     subplot(5,n_plots+1,i+4*n_plots+5)
-    imagesc(reshape(Arobust_t * Ytest(:,I(i)),d1,d2))
+    j = 3*(I(i)-1)+1;
+    RGB(:,:,1) = reshape(Arobust_t * Ytest(:,j  ),d1,d2);
+    RGB(:,:,2) = reshape(Arobust_t * Ytest(:,j+1),d1,d2);
+    RGB(:,:,3) = reshape(Arobust_t * Ytest(:,j+2),d1,d2);
+    imshow(RGB,'InitialMagnification',1000)
 end
 
 % Remove axes

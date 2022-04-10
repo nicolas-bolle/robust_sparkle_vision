@@ -20,10 +20,10 @@
 
 %% Outputs
 % c: (iter_grad x 1) vector of the costs at the start of each iteration
-% cA: (D x D x iter_grad) of the matrix A after each iteration
-% cG: (D x D x iter_grad) of the gradient after each iteration
+% A: (D x D) of the matrix A after the final iteration
+% G: (D x D) of the gradient in the final iteration
 
-function [c, cA, cG] = robust_SparkleVision(X, Y, C, lambda, iter_sink, iter_grad, rho, eta, A, k)
+function [c, A, G] = robust_SparkleVision(X, Y, C, lambda, iter_sink, iter_grad, rho, eta, A, k)
 
 %% Basics
 % Sizes
@@ -39,8 +39,6 @@ U = K .* C;
 
 % Misc variables
 c = zeros(iter_grad,1);    % For holding the cost for each iter
-cA = zeros(D,D,iter_grad); % For holding the values of A after each iter
-cG = zeros(D,D,iter_grad); % For holding the values of gradients
 
 
 %% Gradient descent
@@ -53,7 +51,7 @@ for iter = 1 : iter_grad
 
     % Sinkhorn to compute costs and gradient vectors
     % s is (1 x k), g is (d x k)
-    [s, g] = Dsinkhorn(A * Y(:,I), X(:,I), C, K, U, iter_sink);
+    [s, g] = Dsinkhorn(A * Y(:,I), X(:,I), lambda, K, U, iter_sink);
     
     % The (stochastic) gradient for this iteration
     G = (1/k) * g * Y(:,I)' + rho * sign(A);
@@ -70,10 +68,8 @@ for iter = 1 : iter_grad
     A = max(A,0);
     A = A ./ sum(A,1);
     
-    % Record the cost, A, and G
+    % Record the cost
     c(iter) = mean(s);
-    cA(:,:,iter) = A;
-    cG(:,:,iter) = G;
     
     toc
     

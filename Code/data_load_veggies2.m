@@ -1,19 +1,22 @@
-%% data_load_CIFAR
-% Load in the CIFAR-10 data .mat file and pick out some data for testing
+%% data_load_veggies2
+% Load in the veggies2 data .mat file and pick out some data for testing
 % Sets d1, d2, D, N, Ntest, X, Xtest, M (size of total data), I (indices of N imgs used)
 
+% These images were too large
+
+
 %% Parameters
-d1 = 32;
-d2 = 32;
+d1 = 112;
+d2 = 112;
 D = d1 * d2;
-N = 3000; % This is a healthy amount bigger than D
+N = 9000; % Smaller than D, but whatever
 % N should be a multiple of 3, since we'll take RGB channels
 Ntest = 30; % The size of the test set
 
 
 %% Basic stuff
-% Load CIFAR data
-load('..\Data\CIFAR')
+% Load Pokemon data
+load('..\Data\veggies2')
 M = size(R,3);
 
 % Reshape images into vectors
@@ -28,14 +31,14 @@ I = randperm(M,(N+Ntest)/3);
 R = Rall(:,I);
 G = Gall(:,I);
 B = Ball(:,I);
-X = zeros(D,N+Ntest);
+X = zeros(D,N);
 X(:,1:3:N+Ntest) = R;
 X(:,2:3:N+Ntest) = G;
 X(:,3:3:N+Ntest) = B;
 
 % Plot an image
 i=1;
-RGB = zeros(32,32,3);
+RGB = zeros(d1,d2,3);
 RGB(:,:,1) = reshape(X(:,3*(i-1)+1),d1,d2);
 RGB(:,:,2) = reshape(X(:,3*(i-1)+2),d1,d2);
 RGB(:,:,3) = reshape(X(:,3*(i-1)+3),d1,d2);
@@ -52,4 +55,4 @@ X = X ./ sum(X,1);
 
 
 %% Delete variables to save memory
-clear Rall Gall Ball R G B labels i RGB
+clear Rall Gall Ball R G B i RGB

@@ -58,19 +58,16 @@ disp('Done with SparkleVision')
 %% Prepare to solve the robust way
 
 % Cost matrix for Sinkhorn
-C = Csinkhorn(d1,d2,5);
+C = Csinkhorn(d1,d2,10);
 
 % Initial guess for A
 A = ones(D,D) / D;
 
-% For storing cost, A, and gradients across iterations of gradient descent
+% For storing cost across iterations of gradient descent
 c  = [];
-cA = [];
-cG = [];
 
 
 %% Gradient descent
-% Re-run this block with different parameters if you want to keep iterating
 
 % Sinkhorn parameters
 lambda = 10;
@@ -78,20 +75,15 @@ iter_sink = 100;
 
 % Gradient descent parameters
 iter_grad = 100;
-rho = 0.01;
-eta = 0.01;
+rho = 0.001;
+eta = 0.1;
 k = 100;
 
 % Run
-[cc, ccA, ccG] = robust_SparkleVision(Xnoise, Ynoise, C, lambda, iter_sink, iter_grad, rho, eta, A, k);
+[cc, A, G] = robust_SparkleVision(Xnoise, Ynoise, C, lambda, iter_sink, iter_grad, rho, eta, A, k);
 
 % Store results
 c  = cat(1,c,cc);
-cA = cat(3,cA,ccA);
-cG = cat(3,cG,ccG);
-
-% Update the guess for A
-A = cA(:,:,end);
 
 
 %% Done iterating? Plot the results!
@@ -111,8 +103,8 @@ plot_A
 sgtitle('MNIST A recovery')
 
 % Thresholdings
-Arobust_t  = threshold(Arobust,5);
 Asparkle_t = threshold(Asparkle,5);
+Arobust_t  = threshold(Arobust,5);
 
 % Now some image plots
 plot_test_images
