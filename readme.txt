@@ -1,5 +1,7 @@
 For a quick demo, run the demo_MNIST, demo_CIFAR, or demo_veggies scripts in the Code folder. See the write-up for details on the algorithm and results of the numerics.
 
+I include pdfs of a write-up and presentation I did for this project.
+
 System reqs: a modern CPU (I have an i7) and at least 4 GB RAM available to MATLAB to run all 3 demo files. If you process the original data, you'll need more memory.
 
 

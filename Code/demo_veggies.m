@@ -1,6 +1,5 @@
 %% demo_veggies
 % Runs SparkleVision and the robust version on veggies data
-% Haven't been able to get good results with this size data :(
 
 
 %% Load data
